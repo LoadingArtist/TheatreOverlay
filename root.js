@@ -314,7 +314,7 @@ var FollowQueue = [];
 ////// CONNECT TO SOCKET & FETCH DATA ///////
 /////////////////////////////////////////////
 
-const socketToken = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"; //Socket token from /socket/token end point
+const socketToken = "XXXXXXXXXXXXXXXXXXXXXXXXXXX"; //Socket token from /socket/token end point
   
 //Connect to socket
 const streamlabs = io("https://sockets.streamlabs.com?token=" + socketToken);
@@ -329,115 +329,109 @@ streamlabs.on('connect', function(){
 // FETCH EVENTS
 streamlabs.on('event', (eventData) => {
 	
+	 // STREAMLABS DONATIONS
+    if (eventData.type === 'donation') {
+		//code to handle donation events
+		MessageQueue.push(['donation' ,
+			eventData.message[0].from,
+			eventData.message[0].amount,
+			eventData.message[0].message,
+			eventData.message[0].currency
+		]);
+
+		checkMessages();
+
+    }
+	
 	console.log("eventData: " , eventData);
 	// TWITCH EVENTS
 	if (eventData.for === 'twitch_account') {
 		switch(eventData.type) {
 		  
-		
-        case 'follow':
-				MessageQueue.push(['follow',
-				eventData.message[0].name
-				]);		
-				
-				console.log("messagequeue before checkMessages(); : " , MessageQueue);
-				checkMessages();
-		
-		break;
-			
-		case 'subscription':
-				MessageQueue.push(['subscription' ,
-				eventData.message[0].name,
-				eventData.message[0].months,
-				eventData.message[0].sub_plan, //1000 = tier 1, 2000 = tier 2, Prime
-				eventData.message[0].message,
-				eventData.message[0].gifter
-				]);
-				
-				checkMessages();
-		
-				if(eventData.message[0].gifter == ""){
-					console.log("No gifter");
+			case 'follow':
+					MessageQueue.push(['follow',
+					eventData.message[0].name
+					]);		
+					
+					console.log("messagequeue before checkMessages(); : " , MessageQueue);
 					checkMessages();
-				}else{
-					console.log(eventData.message[0].gifter);
-					checkMessages();
-				}
-
-		break;
-				
-		case 'bits':
-				MessageQueue.push(['bits' ,
-				eventData.message[0].name,
-				eventData.message[0].amount,
-				eventData.message[0].message
-				]);
-				
-				checkMessages();
-		
-		break;
-		
-		case 'raid':
-				MessageQueue.push(['raid' ,
-				eventData.message[0].name,
-				eventData.message[0].raiders
-				]);
-				
-				checkMessages();
-		
-		break;
-		
-		case 'host':
-				MessageQueue.push(['host' ,
-				eventData.message[0].name,
-				eventData.message[0].viewers
-				]);
-				
-				checkMessages();
-		
-		break;
 			
-		default:
-		//default case
-		console.log(eventData.message);
-		}
-		
-	}else if (eventData.for === 'streamlabs'){
-		switch(eventData.type) {
-
-		case 'donation':
-				MessageQueue.push(['donation' ,
-				eventData.message[0].from,
-				eventData.message[0].amount,
-				eventData.message[0].message,
-				eventData.message[0].currency
-				]);
+			break;
 				
-				checkMessages();
-		
-		break;
-		
-		default:
-		//default case
-		console.log(eventData.message);
+			case 'subscription':
+					MessageQueue.push(['subscription' ,
+					eventData.message[0].name,
+					eventData.message[0].months,
+					eventData.message[0].sub_plan, //1000 = tier 1, 2000 = tier 2, Prime
+					eventData.message[0].message,
+					eventData.message[0].gifter
+					]);
+					
+					checkMessages();
+			
+					if(eventData.message[0].gifter == ""){
+						console.log("No gifter");
+						checkMessages();
+					}else{
+						console.log(eventData.message[0].gifter);
+						checkMessages();
+					}
+
+			break;
+					
+			case 'bits':
+					MessageQueue.push(['bits' ,
+					eventData.message[0].name,
+					eventData.message[0].amount,
+					eventData.message[0].message
+					]);
+					
+					checkMessages();
+			
+			break;
+			
+			case 'raid':
+					MessageQueue.push(['raid' ,
+					eventData.message[0].name,
+					eventData.message[0].raiders
+					]);
+					
+					checkMessages();
+			
+			break;
+			
+			case 'host':
+					MessageQueue.push(['host' ,
+					eventData.message[0].name,
+					eventData.message[0].viewers
+					]);
+					
+					checkMessages();
+			
+			break;
+			
+			default:
+			//default case
+			console.log(eventData.message);
 		}
+
 	}else if (eventData.for === 'patreon'){
 		switch(eventData.type) {
 
-		case 'pledge':
-				MessageQueue.push(['pledge' ,
-				eventData.message[0].from,
-				eventData.message[0].amount,
-				eventData.message[0].formattedAmount,
-				eventData.message[0].currency
-				]);
-				
-				checkMessages();
-		break;
-		
-		default:
-		//default case
-		console.log(eventData.message);
+			case 'pledge':
+					MessageQueue.push(['pledge' ,
+					eventData.message[0].from,
+					eventData.message[0].amount,
+					eventData.message[0].formattedAmount,
+					eventData.message[0].currency
+					]);
+					
+					checkMessages();
+			break;
+			
+			default:
+			//default case
+			console.log(eventData.message);
 		}
 	}
 });
@@ -580,11 +574,11 @@ function followerAlert(msgData){
 			
 			if (bodyLabel){
 				followField.getChildByName(folMC.name).followerPerson.hat.gotoAndStop(bodyLabel);
-				console.log("if bodyLabel>>);
+				console.log("if bodyLabel>>");
 				
 			}else if (hatLabel){
 				followField.getChildByName(folMC.name).followerPerson.body.gotoAndStop(hatLabel);
-				console.log("if hatLabel>>);
+				console.log("if hatLabel>>");
 			}
 		}, 100)	
 		
