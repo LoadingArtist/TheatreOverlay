@@ -120,7 +120,7 @@ var commands = {
 	  
 	xintro: function () {
 		_root.CURCONTAINER.removeAllChildren();
-		let curName = eval("new lib.CUR_INTRO()");
+		let curName = new lib.CUR_INTRO();
 		curName.name = "curAnim";
 		_root.CURCONTAINER.addChild(curName);
 	},
@@ -329,8 +329,8 @@ streamlabs.on('connect', function(){
 // FETCH EVENTS
 streamlabs.on('event', (eventData) => {
 	
-	 // STREAMLABS DONATIONS
-    if (eventData.type === 'donation') {
+	// STREAMLABS DONATIONS
+	if (eventData.type === 'donation') {
 		//code to handle donation events
 		MessageQueue.push(['donation' ,
 			eventData.message[0].from,
@@ -341,9 +341,9 @@ streamlabs.on('event', (eventData) => {
 
 		checkMessages();
 
-    }
+	}
 	
-	console.log("eventData: " , eventData);
+	//console.log("eventData: " , eventData);
 	// TWITCH EVENTS
 	if (eventData.for === 'twitch_account') {
 		switch(eventData.type) {
@@ -447,9 +447,10 @@ streamlabs.on('event', (eventData) => {
 function dispatchQueue() {
 	var msg = MessageQueue[0];
 	var msgType = MessageQueue[0][0];
-	var msgData = MessageQueue[0][1];
+	var msgDataRaw = MessageQueue[0][1];
+	var msgData = msgDataRaw.toLowerCase();
 	
-	console.log(MessageQueue[0]);
+	//console.log(MessageQueue[0]);
 
 	
 	if(msg != 0){
@@ -463,7 +464,8 @@ function dispatchQueue() {
 			var msgMonths = MessageQueue[0][2];
 			var msgPlan = MessageQueue[0][3];
 			var msgMessage = MessageQueue[0][4];
-			var msgGifter = MessageQueue[0][5];
+			var msgGifterRaw = MessageQueue[0][5]||"";
+			var msgGifter = msgGifterRaw.toLowerCase();
 			
 			subAlert(msgData, msgMonths, msgPlan, msgMessage, msgGifter);
 			MessageQueue.splice(0, 1);
@@ -545,7 +547,7 @@ function followerAlert(msgData){
 	Math.seedrandom(msgData); //create a random seed based on the user ID number
 	
 	
-	let folMC = eval( "new lib.X_FOLLOW()" );
+	let folMC = new lib.X_FOLLOW();
 	folMC.name = msgData;
 
 	followField.addChild(folMC);
@@ -554,7 +556,7 @@ function followerAlert(msgData){
 	let bodyNum = rngFromID(followField.getChildByName(folMC.name).followerPerson.body.totalFrames);
 	let hatNum = rngFromID(followField.getChildByName(folMC.name).followerPerson.hat.totalFrames);
 	
-	
+	console.log("Follow: " + msgData + " | bodyNum: " + bodyNum + " | hatNum: " + hatNum);
 
 	// add username/changing clothes
 	setTimeout(() => {
@@ -572,13 +574,9 @@ function followerAlert(msgData){
 			//Is there a way to not pick a labeled body if hat wasn't a label?
 			//Also seems like keyframes with no label will act as if they do, if they are after a labeled keyframe
 			
-			if (bodyLabel){
-				followField.getChildByName(folMC.name).followerPerson.hat.gotoAndStop(bodyLabel);
-				console.log("if bodyLabel>>");
-				
-			}else if (hatLabel){
+			if (hatLabel){
 				followField.getChildByName(folMC.name).followerPerson.body.gotoAndStop(hatLabel);
-				console.log("if hatLabel>>");
+				//console.log("if hatLabel>>");
 			}
 		}, 100)	
 		
@@ -597,7 +595,20 @@ function followerAlert(msgData){
 
 // SUB ALERT
 
+
+var subField = new createjs.Container();
+	subField.regX = 0;
+	_root.addChild(subField);
+
+subMC = "";
+
 function subAlert(msgData, msgMonths, msgPlan, msgMessage, msgGifter){
+	
+	subField.removeAllChildren();
+	let subMC = new lib.X_SUB_DROP();
+	subMC.name = msgData;
+
+	subField.addChild(subMC);
 	
 	//SET STATUS AND DATA
 	alertActive = true;
@@ -617,29 +628,40 @@ function subAlert(msgData, msgMonths, msgPlan, msgMessage, msgGifter){
 	// create random numbers for customization
 	let bodyNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.totalFrames);	
 	let hatNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.totalFrames);
-
-	console.log("name is: " + msgData + " | Months is: " + msgMonths + "| Plan is: " + msgPlan + "| Gifter is: " + msgGifter + " | Message: " + msgMessage + " | bodyNum: " + bodyNum);
-
+	
+	console.log("Sub: " + msgData + " | bodyNum: " + bodyNum + " | hatNum: " + hatNum);
 
 	//IS GIFTED?
 	setTimeout(() => {
 		if (!msgGifter) {
-			_root.MAINCONTAINER.getChildByName("charAnim").banner.gotoAndPlay ("normal");
+			subField.getChildByName(subMC.name).banner.gotoAndPlay("normal");
+			//subField.getChildByName(subMC.name).banner.bannerSubBG.gifter.visible = false;
 		}else{
 			
-			//Generate gifter person customization (NOT READY YET)
-			//Math.seedrandom(msgGifter);
-			//let bodyNumGifter = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.totalFrames);	
-			//let hatNumGifter = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.totalFrames);
+			//waitTime = 3000; //to make it stay a bit longer when it's a gifted sub?
 			
-			_root.MAINCONTAINER.getChildByName("charAnim").banner.gotoAndPlay("gifted");
-			_root.MAINCONTAINER.getChildByName("charAnim").banner.bannerGifted.txtGifter.text = msgGifter;
+			//Generate gifter person customization
+			Math.seedrandom(msgGifter);
+			let bodyNumGifter = rngFromID(subField.getChildByName(subMC.name).banner.bannerGifted.gifter.body.totalFrames);	
+			let hatNumGifter = rngFromID(subField.getChildByName(subMC.name).banner.bannerGifted.gifter.hat.totalFrames);
+			
+			console.log("Gifter: " + msgGifter + " | bodyNum: " + bodyNumGifter + " | hatNum: " + hatNumGifter);
+			
+			subField.getChildByName(subMC.name).banner.bannerGifted.txtGifter.text = "Gifted by " + msgGifter;
+			
+			subField.getChildByName(subMC.name).banner.bannerGifted.gifter.body.gotoAndStop(bodyNumGifter);
+			subField.getChildByName(subMC.name).banner.bannerGifted.gifter.hat.gotoAndStop(hatNumGifter);
+			
+			setTimeout(() => {
+				subField.getChildByName(subMC.name).banner.gotoAndPlay("gifted");
+			}, 5000);
 		}
 		
 		//FILL DATA
-		_root.MAINCONTAINER.getChildByName("charAnim").banner.txtUsername.text = msgData;
 		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.txtNameAbove.text = msgData;
 		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.txtNameAboveShadow.text = msgData;
+		
+		subField.getChildByName(subMC.name).banner.bannerSubBG.txtUsername.text = msgData;
 		
 		//FILL CUSTOMIZATION
 		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.gotoAndStop(bodyNum);
@@ -649,24 +671,28 @@ function subAlert(msgData, msgMonths, msgPlan, msgMessage, msgGifter){
 			let bodyLabel = _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.currentLabel;
 			let hatLabel = _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.currentLabel;
 			
-			if (bodyLabel){
-				_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.gotoAndStop(bodyLabel);
-			}else if (hatLabel){
+			if (hatLabel){
 				_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.gotoAndStop(hatLabel);
+			}
+			
+			let bodyGifterLabel = subField.getChildByName(subMC.name).banner.bannerGifted.gifter.body.currentLabel;
+			let hatGifterLabel = subField.getChildByName(subMC.name).banner.bannerGifted.gifter.hat.currentLabel;
+			
+			if (hatGifterLabel){
+				subField.getChildByName(subMC.name).banner.bannerGifted.gifter.body.gotoAndStop(hatGifterLabel);
 			}
 		}, 100)	
 		
 		
 		if (msgPlan == "1000"){
-			_root.MAINCONTAINER.getChildByName("charAnim").banner.bannerSubBG.gotoAndStop("tier1");
+			subField.getChildByName(subMC.name).banner.bannerSubBG.gotoAndStop("tier1");
 		}else if (msgPlan == "2000"){
-			_root.MAINCONTAINER.getChildByName("charAnim").banner.bannerSubBG.gotoAndStop("tier2");
+			subField.getChildByName(subMC.name).banner.bannerSubBG.gotoAndStop("tier2");
 		}else if (msgPlan == "3000"){
-			_root.MAINCONTAINER.getChildByName("charAnim").banner.bannerSubBG.gotoAndStop("tier3");
+			subField.getChildByName(subMC.name).banner.bannerSubBG.gotoAndStop("tier3");
 		}else{
-			_root.MAINCONTAINER.getChildByName("charAnim").banner.bannerSubBG.gotoAndStop("tier1");
-			_root.MAINCONTAINER.getChildByName("charAnim").banner.gotoAndPlay("prime");
-			//audience to talk about how to get a free prime sub
+			subField.getChildByName(subMC.name).banner.bannerSubBG.gotoAndStop("tier1");
+			subField.getChildByName(subMC.name).banner.gotoAndPlay("prime");
 		}
 		
 		
@@ -677,13 +703,12 @@ function subAlert(msgData, msgMonths, msgPlan, msgMessage, msgGifter){
 	
 	setTimeout(() => {
 		if (msgMonths > 1){
-			_root.MAINCONTAINER.getChildByName("charAnim").banner.bannerSubDetail.txtMonths.text = msgMonths;
-			_root.MAINCONTAINER.getChildByName("charAnim").banner.bannerSubDetail.gotoAndStop("resub");
-
+			subField.getChildByName(subMC.name).banner.bannerSubDetail.txtMonths.text = msgMonths;
+			subField.getChildByName(subMC.name).banner.bannerSubDetail.gotoAndStop("resub");
 		}else{
-			_root.MAINCONTAINER.getChildByName("charAnim").banner.bannerSubDetail.txtMonths.text = "";
-			_root.MAINCONTAINER.getChildByName("charAnim").banner.bannerSubDetail.gotoAndStop("new");
 			//audience waving WELCOME sign?
+			subField.getChildByName(subMC.name).banner.bannerSubDetail.txtMonths.text = "";
+			subField.getChildByName(subMC.name).banner.bannerSubDetail.gotoAndStop("new");
 		}
 	}, 100);
 
@@ -694,27 +719,27 @@ function subAlert(msgData, msgMonths, msgPlan, msgMessage, msgGifter){
 				
 		if (msgMonths == 1){ // NEW SUBSCRIBER
 			_root.MAINCONTAINER.getChildByName("charAnim").badgeMC.gotoAndStop("badge1");
-			console.log("1 msgMonths: " + msgMonths);
+
 
 		}else if (msgMonths > 1 && msgMonths < 3){
 			_root.MAINCONTAINER.getChildByName("charAnim").badgeMC.gotoAndStop("badge1");
-			console.log("1elseif msgMonths: " + msgMonths);
+
 			
 		}else if (msgMonths >= 3 && msgMonths < 5){
 			_root.MAINCONTAINER.getChildByName("charAnim").badgeMC.gotoAndStop("badge3");
-			console.log("3 msgMonths: " + msgMonths);
+
 			
 		}else if (msgMonths >= 6 && msgMonths < 12){
 			_root.MAINCONTAINER.getChildByName("charAnim").badgeMC.gotoAndStop("badge6");
-			console.log("6 msgMonths: " + msgMonths);
+
 			
 		}else if (msgMonths >= 12 && msgMonths < 24){
 			_root.MAINCONTAINER.getChildByName("charAnim").badgeMC.gotoAndStop("badge12");
-			console.log("12 msgMonths: " + msgMonths);
+
 
 		}else if (msgMonths >= 24 && msgMonths < 36){
 			_root.MAINCONTAINER.getChildByName("charAnim").badgeMC.gotoAndStop("badge24");
-			console.log("24 msgMonths: " + msgMonths);
+
 			
 		}else{
 			console.log("ELSE??? msgMonths: " + msgMonths);
@@ -726,10 +751,10 @@ function subAlert(msgData, msgMonths, msgPlan, msgMessage, msgGifter){
 	///// SUB REACHED NEW BADGE?
 	
 	if (newBadgeCheck != -1) { // if milestone badge
-		_root.MAINCONTAINER.getChildByName("charAnim").banner.newBadge.visible = true;
+		subField.getChildByName(subMC.name).banner.newBadge.visible = true;
 		//'new badge' overlay on top of existing notification, and we display it
 	}else{
-		_root.MAINCONTAINER.getChildByName("charAnim").banner.newBadge.visible = false;
+		subField.getChildByName(subMC.name).banner.newBadge.visible = false;
 	}	
 	
 	
@@ -774,6 +799,81 @@ function subAlert(msgData, msgMonths, msgPlan, msgMessage, msgGifter){
 
 	
 }
+
+
+
+// PATREON PLEDGE
+
+function pledgeAlert(msgData, msgAmount, msgFormattedAmount, msgCurrency){
+	
+	subField.removeAllChildren();
+	let subMC = new lib.X_SUB_DROP();
+	subMC.name = msgData;
+
+	subField.addChild(subMC);
+
+	//SET STATUS AND DATA
+	alertActive = true;
+
+	//ANIMATION
+	triggerSequence("pledge");
+	
+
+	//CHARACTER CUSTOMIZATION
+	 
+	Math.seedrandom(msgData); //create a random seed based on the user ID number
+	
+	// create random numbers for customization
+	let bodyNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.totalFrames);	
+	let hatNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.totalFrames);
+	
+	console.log("Patreon: " + msgData + " | bodyNum: " + bodyNum + " | hatNum: " + hatNum);
+	
+	setTimeout(() => {
+		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.gotoAndStop(bodyNum);
+		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.gotoAndStop(hatNum);
+		
+		setTimeout(() => { // check if hat or body has a label, if so make sure they are both active together
+			let bodyLabel = _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.currentLabel;
+			let hatLabel = _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.currentLabel;
+			
+			if (hatLabel){
+				_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.gotoAndStop(hatLabel);
+			}
+		}, 100)	
+		
+	}, 100); 
+			
+	
+	//FILL DATA
+	let nameSplit = msgData.split(" "); //get first name only
+	
+		subField.getChildByName(subMC.name).banner.bannerSubBG.txtUsername.text = nameSplit[0];
+		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.txtNameAbove.text = nameSplit[0];
+		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.txtNameAboveShadow.text = nameSplit[0];
+		
+	setTimeout(() => {		
+		subField.getChildByName(subMC.name).banner.bannerSubBG.bannerSubDetail.txtDetails.text = "JUST BECAME A " + msgFormattedAmount + " PATRON!";
+		subField.getChildByName(subMC.name).banner.bannerSubBG.bannerSubDetail.gotoAndStop("pledge");
+		
+	}, 100);
+		
+	setTimeout(() => {
+		//CHOOSE BANNER (WHICH TIER)
+		if (msgAmount == "1"){
+			subField.getChildByName(subMC.name).banner.bannerSubBG.gotoAndStop("tier1");
+		}else if (msgAmount == "4"){
+			subField.getChildByName(subMC.name).banner.bannerSubBG.gotoAndStop("tier2");
+		}else if (msgAmount == "10"){
+			subField.getChildByName(subMC.name).banner.bannerSubBG.gotoAndStop("tier3");
+		}else{
+			subField.getChildByName(subMC.name).banner.bannerSubBG.gotoAndStop("tier1");
+		}
+	}, 100);
+		
+}
+
+
 
 
 // DONATION/BITS ALERT
@@ -826,6 +926,8 @@ function donoAlert(msgData, msgAmount, msgMessage, msgType, msgCurrency){
 		let bodyNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.totalFrames);	
 		let hatNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.totalFrames);
 		
+		console.log("Dono: " + msgData + " | bodyNum: " + bodyNum + " | hatNum: " + hatNum);
+		
 		//FILL DATA
 		_root.MAINCONTAINER.getChildByName("charAnim").banner.txtUsername.text = msgData;
 		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.txtNameAbove.text = msgData;
@@ -841,9 +943,7 @@ function donoAlert(msgData, msgAmount, msgMessage, msgType, msgCurrency){
 				let bodyLabel = _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.currentLabel;
 				let hatLabel = _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.currentLabel;
 				
-				if (bodyLabel){
-					_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.gotoAndStop(bodyLabel);
-				}else if (hatLabel){
+				if (hatLabel){
 					_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.gotoAndStop(hatLabel);
 				}
 			}, 100)				
@@ -918,73 +1018,6 @@ function donoAlert(msgData, msgAmount, msgMessage, msgType, msgCurrency){
 }
 
 
-// PATREON PLEDGE
-
-function pledgeAlert(msgData, msgAmount, msgFormattedAmount, msgCurrency){
-
-	//SET STATUS AND DATA
-	alertActive = true;
-
-	//ANIMATION
-	triggerSequence("pledge");
-	
-
-	//CHARACTER CUSTOMIZATION
-	
-	Math.seedrandom(msgData); //create a random seed based on the user ID number
-	
-	// create random numbers for customization
-	let bodyNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.totalFrames);	
-	let hatNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.totalFrames);
-	
-	setTimeout(() => {
-		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.gotoAndStop(bodyNum);
-		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.gotoAndStop(hatNum);
-		
-		setTimeout(() => { // check if hat or body has a label, if so make sure they are both active together
-			let bodyLabel = _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.currentLabel;
-			let hatLabel = _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.currentLabel;
-			
-			if (bodyLabel){
-				_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.gotoAndStop(bodyLabel);
-			}else if (hatLabel){
-				_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.gotoAndStop(hatLabel);
-			}
-		}, 100)	
-		
-	}, 100); 
-			
-	
-	//FILL DATA
-	let nameSplit = msgData.split(" "); //get first name only
-	
-		_root.MAINCONTAINER.getChildByName("charAnim").banner.txtUsername.text = nameSplit[0];
-		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.txtNameAbove.text = nameSplit[0];
-		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.txtNameAboveShadow.text = nameSplit[0];
-		
-	setTimeout(() => {		
-		_root.MAINCONTAINER.getChildByName("charAnim").banner.bannerSubDetail.txtDetails.text = "JUST BECAME A " + msgFormattedAmount + " PATRON!";
-		_root.MAINCONTAINER.getChildByName("charAnim").banner.bannerSubDetail.gotoAndStop("pledge");
-		
-		console.log(msgFormattedAmount);
-		console.log(_root.MAINCONTAINER.getChildByName("charAnim").banner.bannerSubDetail.txtDetails);
-	}, 100);
-		
-	setTimeout(() => {
-		//CHOOSE BANNER (WHICH TIER)
-		if (msgAmount == "1"){
-			_root.MAINCONTAINER.getChildByName("charAnim").banner.bannerSubBG.gotoAndStop("tier1");
-		}else if (msgAmount == "4"){
-			_root.MAINCONTAINER.getChildByName("charAnim").banner.bannerSubBG.gotoAndStop("tier2");
-		}else if (msgAmount == "10"){
-			_root.MAINCONTAINER.getChildByName("charAnim").banner.bannerSubBG.gotoAndStop("tier3");
-		}else{
-			_root.MAINCONTAINER.getChildByName("charAnim").banner.bannerSubBG.gotoAndStop("tier1");
-		}
-	}, 100);
-		
-}
-
 
 
 // RAID ALERT
@@ -1038,11 +1071,9 @@ function hostAlert(msgData, msgViewers){
 	// create random numbers for customization
 	let bodyNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.totalFrames);	
 	let hatNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.totalFrames);
+	
+	console.log("Host: " + msgData + " | bodyNum: " + bodyNum + " | hatNum: " + hatNum);
 
-	console.log("name is: " + msgData + " | Viewers is: " + msgViewers);
-
-
-	//IS GIFTED?
 	setTimeout(() => {
 		
 		//FILL DATA
@@ -1062,13 +1093,13 @@ function hostAlert(msgData, msgViewers){
 		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.gotoAndStop(bodyNum);
 		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.gotoAndStop(hatNum);
 		
+		console.log("body: " + bodyNum + " | hat: " + hatNum);
+		
 		setTimeout(() => { // check if hat or body has a label, if so make sure they are both active together
 			let bodyLabel = _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.currentLabel;
 			let hatLabel = _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.currentLabel;
 			
-			if (bodyLabel){
-				_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.gotoAndStop(bodyLabel);
-			}else if (hatLabel){
+			if (hatLabel){
 				_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.gotoAndStop(hatLabel);
 			}
 		}, 100)	
