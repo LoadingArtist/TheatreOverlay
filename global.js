@@ -14,7 +14,7 @@ function stopRandomFrame(layer,frameRange){
 
 function endAnim(){
 	stage.children[0].returnToIdle();
-	stage.children[0].theTable.gotoAndStop("T_DEFAULT");
+	tableAnim("normal");
 }
 
 function anim(animationName){
@@ -49,6 +49,22 @@ function tableAnim(anim){
 
 function endAlert(){
 	window.alertActive = false;
+}
+
+
+function pauseAlert(x){
+	if (x){
+		window.alertPaused = x;
+		console.log("notifications paused? : " + window.alertPaused);
+	}else{
+		if (window.alertPaused == false){
+			window.alertPaused = true;
+			console.log("notifications PAUSED");
+		}else{
+			window.alertPaused = false;
+			console.log("notifications RESUMED");
+		}
+	}
 }
 
 function startDono(){ //use this at beginning of dono animations if you want hat guy to hide
