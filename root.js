@@ -12,6 +12,7 @@ var currentPriority = 0; // Global 'current action' priority to compare against
 var actions = {
 
   reset:       { rank: 99, animation: "X_RESET" },
+  pause:       { rank: 99, animation: "X_PAUSE" }, //pauses notifications
 	
   empty:       { rank: 20, animation: "X_EMPTY" },
 
@@ -38,11 +39,7 @@ var actions = {
   skip:        { rank: 9,  animation: "X_SKIP" },
   
   // Interesting medium-priotiry stuff that should win over idles or passive/non-event actions
-  countdown:   { rank: 5, animation: "COUNTDOWN" },
 
-  singapplause:{ rank: 5, animation: "SING_APPLAUSE" },
-  singlighter: { rank: 5, animation: "SING_LIGHTER" },
-  
   s1:          { rank: 5, animation: "X_SING_01" },
   s2:          { rank: 5, animation: "X_SING_02" },
   s3:          { rank: 5, animation: "X_SING_03" },
@@ -85,35 +82,39 @@ var commands = {
 		stage.children[0].gotoAndStop("_DEFAULT");
 		actions.idle.animation = "X_DEFAULT";
 		endAnim();
+		tableAnim("normal");
 	},
 	  
 	xxxdraw: function () {
 		stage.children[0].gotoAndStop("_DEFAULT");
 		actions.idle.animation = "D_DEFAULT";
 		endAnim();
+		tableAnim("normal");
 	},
 	  
 	xxxgame: function () {
 		stage.children[0].gotoAndStop("_GAME");
 		actions.idle.animation = "G_DEFAULT";
 		endAnim();
+		tableAnim("normal");
 	},
 	  
 	xxxhide: function () {
 		stage.children[0].gotoAndStop("_HIDE");
 		endAnim();
+		tableAnim("normal");
 	},
 	  
 	xxxsing: function () {
 		actions.idle.animation = "X_SING_DEFAULT";
 		endAnim();
-		tableAnim("SMOKE");
+		tableAnim("smoke");
 	},
 	  
 	xxxguitar: function () {
 		actions.idle.animation = "X_GUITAR_01";
 		endAnim();
-		tableAnim("SMOKE");
+		tableAnim("smoke");
 	},
 	  
 	//// CURTAINS
@@ -135,10 +136,25 @@ var commands = {
 	  
 	xoutro: function () {
 		_root.CURCONTAINER.removeAllChildren();
-		let curName = eval("new lib.CUR_OUTRO()");
+		let curName = new lib.CUR_OUTRO();
 		curName.name = "curAnim";
 		_root.CURCONTAINER.addChild(curName);
-	}
+	},
+	
+	
+	///// THEME CHOICE
+	//
+	//tttnormal: function () {
+	//	changeTheme(this.stage,"normal");
+	//},
+	//tttxmas: function () {
+	//	changeTheme(this.stage,"xmas");
+	//},
+	//ttthalloween: function() {
+	//	changeTheme(this.stage,"halloween");
+	//},
+	
+
 };
 
 
@@ -158,16 +174,45 @@ var audienceCommands = {
 
 var lightCommands = {
 	lreset: "L_RESET",
-	l3blue: "L_3BLUE",
-	l1blue: "L_1BLUE",
-	l1orange: "L_1ORANGE",
-	l3red: "L_3RED",
-	lstaticblue: "L_STATICBLUE",
-	lstaticorange: "L_STATICORANGE",
-	lstaticred: "L_STATICRED",
+	l1: "L_1",
+	l2: "L_2",
+	l3: "L_3",
+	l4: "L_4",
+	l5: "L_5",
+	l6: "L_6",
+	l7: "L_7",
+	l8: "L_8",
+	l9: "L_9",
 	lspot: "L_SPOT",
 	lspotanim: "L_SPOTANIM",
 }
+
+/////////// THEMES
+
+//var theme = "normal";
+
+//var themeProtos = [
+//	lib.T_DEFAULT.prototype,
+//	lib.curtain.prototype,
+//	lib.CURTAIN_L.prototype,
+//	lib.CURTAIN_R.prototype
+//];
+
+//function changeTheme(parent, theme) {
+//	if(parent.children) {
+//		for(let i = 0, l = parent.children.length; i < l; i++) {
+//			let child = parent.children[i];
+//			if(themeProtos.indexOf(child.__proto__) != -1) {
+//				child.gotoAndStop(theme);
+//			} else {
+//				changeTheme(child, theme);
+//			}
+//		}
+//	}
+//}
+
+
+
 
 
 /// Functions
@@ -303,6 +348,8 @@ this.lightReset = function(){
 // NOTIFICATIONS /STREAMLABS IMPLEMENTATION
 
 alertActive = false; //global variable for global function
+alertPaused = false; //global variable for pausing and unpausing notifications
+
 const canvas = document.getElementById('canvas');
 const context = canvas.getContext('2d');
 var lastAlertID = 'lul';
@@ -511,7 +558,7 @@ function dispatchQueue() {
 
 function checkMessages(){
 	if(MessageQueue.length > 0){
-		if (alertActive == false){
+		if (alertActive == false && alertPaused == false){
 			dispatchQueue();
 		} else {
 			setTimeout(checkMessages,2000); // If something is playing, check again in 2 seconds or so.
@@ -853,8 +900,8 @@ function pledgeAlert(msgData, msgAmount, msgFormattedAmount, msgCurrency){
 		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.txtNameAboveShadow.text = nameSplit[0];
 		
 	setTimeout(() => {		
-		subField.getChildByName(subMC.name).banner.bannerSubBG.bannerSubDetail.txtDetails.text = "JUST BECAME A " + msgFormattedAmount + " PATRON!";
-		subField.getChildByName(subMC.name).banner.bannerSubBG.bannerSubDetail.gotoAndStop("pledge");
+		subField.getChildByName(subMC.name).banner.bannerSubDetail.txtDetails.text = "JUST BECAME A " + msgFormattedAmount + " PATRON!";
+		subField.getChildByName(subMC.name).banner.bannerSubDetail.gotoAndStop("pledge");
 		
 	}, 100);
 		
@@ -962,16 +1009,16 @@ function donoAlert(msgData, msgAmount, msgMessage, msgType, msgCurrency){
 			
 		// DIFFERENT ANIMATIONS FOR DIFFERENT AMOUNTS
 		setTimeout(() => {
-			if (trueAmount == 100) {
+			/*if (trueAmount == 100) {
 				_root.DONOCONTAINER.addChild(new lib.X_DONO_1());
 			}else if (trueAmount == 300) {
 				_root.DONOCONTAINER.addChild(new lib.X_DONO_2());
 			}else if (trueAmount >= 500) {
 				_root.DONOCONTAINER.addChild(new lib.X_DONO_0());;
-			}else{
+			}else{*/
 				_root.DONOCONTAINER.addChild(new lib.X_DONO_0());
 				console.log("is not a special one");
-			}
+			//}
 		}, 100); //was 4500//waits before firing the above donation animation (giving hatguy enough time to duck down)
 		
 		
