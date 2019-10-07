@@ -259,7 +259,7 @@ function triggerSequence (actionName) {
 	let animName = eval( "new lib." + action.animation + "()" );
 	animName.name = "charAnim";
 	_root.MAINCONTAINER.addChild(animName);
-	  
+	 
     currentPriority = action.rank;
   }
 
@@ -353,6 +353,7 @@ alertPaused = false; //global variable for pausing and unpausing notifications
 const canvas = document.getElementById('canvas');
 const context = canvas.getContext('2d');
 var lastAlertID = 'lul';
+
 var MessageQueue = [];
 
 var FollowQueue = [];
@@ -372,114 +373,142 @@ streamlabs.on('connect', function(){
 	console.log("connect"); 
 });
 
+class DonationEvent {
+	parseJson(eventData){
+		this.from = eventData.message[0].from;
+		this.message = eventData.message[0].message;
+		this.amount = eventData.message[0].amount;
+		this.currency = eventData.message[0].currency;
+	}
+
+	process(){
+		donoAlert(this.from.toLowerCase(), this.amount, this.message, DonationEvent.prototype.type, this.currency);
+	}
+}
+DonationEvent.prototype.type = 'donation';
+
+class FollowEvent {
+	parseJson(eventData){
+		this.name = eventData.message[0].name;
+	}
+
+	process(){
+		followerAlert(this.name.toLowerCase());
+	}
+}
+FollowEvent.prototype.type = 'follow';
+
+class SubscriptionEvent {
+	parseJson(eventData){
+		this.name = eventData.message[0].name;
+		this.months = eventData.message[0].months;
+		this.sub_plan = eventData.message[0].sub_plan; //1000 = tier 1, 2000 = tier 2, Prime
+		this.message = eventData.message[0].message;
+		this.gifter = eventData.message[0].gifter;
+
+		if(eventData.message[0].gifter == ""){
+			console.log("No gifter");
+		}else{
+			console.log(eventData.message[0].gifter);
+		}
+	}
+
+	process(){
+		subAlert(this.name.toLowerCase(), this.months, this.sub_plan, this.message, this.gifter.toLowerCase());
+	}
+}
+SubscriptionEvent.prototype.type = 'subscription';
+
+class BitsEvent {
+	parseJson(eventData){
+		this.name = eventData.message[0].name;
+		this.amount = eventData.message[0].amount;
+		this.message = eventData.message[0].message;		
+	}
+
+	process(){
+		donoAlert(this.name.toLowerCase(), this.amount, this.message, BitsEvent.prototype.type);
+	}
+}
+BitsEvent.prototype.type = 'bits';
+
+class RaidEvent {
+	parseJson(eventData){
+		this.name = eventData.message[0].name;
+		this.raiders = eventData.message[0].raiders;
+	}
+
+	process(){
+		raidAlert(this.name.toLowerCase(), this.raiders);
+	}
+}
+RaidEvent.prototype.type = 'raid';
+
+class HostEvent {
+	parseJson(eventData){
+		this.name = eventData.message[0].name;
+		this.viewers = eventData.message[0].viewers;
+	}
+
+	process(){
+		hostAlert(this.name.toLowerCase(), this.viewers);
+	}
+}
+HostEvent.prototype.type = 'host';
+
+class PledgeEvent {			
+
+	parseJson(eventData){
+		this.from = eventData.message[0].from;
+		this.amount = eventData.message[0].amount;
+		this.formattedAmount = eventData.message[0].formattedAmount;
+		this.currency = eventData.message[0].currency;
+	}
+
+	process(){
+		pledgeAlert(this.from.toLowerCase(), this.amount, this.formattedAmount, this.currency);
+	}
+}
+PledgeEvent.prototype.type = 'pledge';
+
+
+StreamLabSupportedEventTypes = { 
+	"twitch_account" : [DonationEvent, SubscriptionEvent, FollowEvent, HostEvent, BitsEvent, RaidEvent],
+	"streamlabs" : [DonationEvent],
+	"patreon" : [PledgeEvent],
+	"youtube_account" : {},
+	"mixer_account" : {}
+}
 
 // FETCH EVENTS
 streamlabs.on('event', (eventData) => {
-	
-	// STREAMLABS DONATIONS
-	if (eventData.type === 'donation') {
-		//code to handle donation events
-		MessageQueue.push(['donation' ,
-			eventData.message[0].from,
-			eventData.message[0].amount,
-			eventData.message[0].message,
-			eventData.message[0].currency
-		]);
 
-		checkMessages();
-
+	function isType(event){
+		return event.prototype.type === eventData.type;
 	}
-	
-	//console.log("eventData: " , eventData);
-	// TWITCH EVENTS
-	if (eventData.for === 'twitch_account') {
-		switch(eventData.type) {
-		  
-			case 'follow':
-					MessageQueue.push(['follow',
-					eventData.message[0].name
-					]);		
-					
-					console.log("messagequeue before checkMessages(); : " , MessageQueue);
-					checkMessages();
-			
-			break;
-				
-			case 'subscription':
-					MessageQueue.push(['subscription' ,
-					eventData.message[0].name,
-					eventData.message[0].months,
-					eventData.message[0].sub_plan, //1000 = tier 1, 2000 = tier 2, Prime
-					eventData.message[0].message,
-					eventData.message[0].gifter
-					]);
-					
-					checkMessages();
-			
-					if(eventData.message[0].gifter == ""){
-						console.log("No gifter");
-						checkMessages();
-					}else{
-						console.log(eventData.message[0].gifter);
-						checkMessages();
-					}
 
-			break;
-					
-			case 'bits':
-					MessageQueue.push(['bits' ,
-					eventData.message[0].name,
-					eventData.message[0].amount,
-					eventData.message[0].message
-					]);
-					
-					checkMessages();
-			
-			break;
-			
-			case 'raid':
-					MessageQueue.push(['raid' ,
-					eventData.message[0].name,
-					eventData.message[0].raiders
-					]);
-					
-					checkMessages();
-			
-			break;
-			
-			case 'host':
-					MessageQueue.push(['host' ,
-					eventData.message[0].name,
-					eventData.message[0].viewers
-					]);
-					
-					checkMessages();
-			
-			break;
-			
-			default:
-			//default case
-			console.log(eventData.message);
+	// if there is no 'for' specified, map it to the 'streamlabs' entry
+	let platform = (eventData.for) ? eventData.for : "streamlabs";
+
+	// check the supported event map to see if we support events from this platform
+	if ( StreamLabSupportedEventTypes.hasOwnProperty(platform) ){
+		let eventClass = StreamLabSupportedEventTypes[platform].find(isType);
+		
+		if (eventClass){
+			let newEvent = new eventClass();
+			newEvent.parseJson(eventData);
+			// create a new object of the event and queue this event
+			MessageQueue.push(newEvent);
+			checkMessages();
 		}
-
-	}else if (eventData.for === 'patreon'){
-		switch(eventData.type) {
-
-			case 'pledge':
-					MessageQueue.push(['pledge' ,
-					eventData.message[0].from,
-					eventData.message[0].amount,
-					eventData.message[0].formattedAmount,
-					eventData.message[0].currency
-					]);
-					
-					checkMessages();
-			break;
-			
-			default:
-			//default case
-			console.log(eventData.message);
+		else{
+			console.log("Unsupported event type '", eventData.type, "' on platform '", platform, "'");	
+			console.log(eventData);
 		}
+	}
+	else{
+		console.log("Unsupported platform ", platform);	
+		console.log(eventData);
 	}
 });
 
@@ -493,66 +522,13 @@ streamlabs.on('event', (eventData) => {
   
 function dispatchQueue() {
 	var msg = MessageQueue[0];
-	var msgType = MessageQueue[0][0];
-	var msgDataRaw = MessageQueue[0][1];
-	var msgData = msgDataRaw.toLowerCase();
-	
-	//console.log(MessageQueue[0]);
-
-	
-	if(msg != 0){
-		if (msgType == 'follow'){
-			
-			followerAlert(msgData);
-			MessageQueue.splice(0, 1);
-		
-		} 
-		else if (msgType == 'subscription'){
-			var msgMonths = MessageQueue[0][2];
-			var msgPlan = MessageQueue[0][3];
-			var msgMessage = MessageQueue[0][4];
-			var msgGifterRaw = MessageQueue[0][5]||"";
-			var msgGifter = msgGifterRaw.toLowerCase();
-			
-			subAlert(msgData, msgMonths, msgPlan, msgMessage, msgGifter);
-			MessageQueue.splice(0, 1);
-		} 
-		else if (msgType == 'bits'){
-			var msgAmount = MessageQueue[0][2];
-			var msgMessage = MessageQueue[0][3];
-
-			donoAlert(msgData, msgAmount, msgMessage, msgType);
-			MessageQueue.splice(0, 1);
-		}  
-		else if (msgType == 'raid'){
-			var msgRaiders = MessageQueue[0][2];
-
-			raidAlert(msgData, msgRaiders);
-			MessageQueue.splice(0, 1);
-		} 
-		else if (msgType == 'host'){
-			var msgViewers = MessageQueue[0][2];
-
-			hostAlert(msgData, msgViewers);
-			MessageQueue.splice(0, 1);
-		} 
-		else if (msgType == 'donation'){
-			var msgAmount = MessageQueue[0][2];
-			var msgMessage = MessageQueue[0][3];
-			var msgCurrency = MessageQueue[0][4];
-
-			donoAlert(msgData, msgAmount, msgMessage, msgType, msgCurrency);
-			MessageQueue.splice(0, 1);
-		} 
-		else if (msgType == 'pledge'){
-			var msgAmount = MessageQueue[0][2];
-			var msgFormattedAmount = MessageQueue[0][3];
-			var msgCurrency = MessageQueue[0][4];
-
-			pledgeAlert(msgData, msgAmount, msgFormattedAmount, msgCurrency);
-			MessageQueue.splice(0, 1);
-		} 
+	if(msg){
+		msg.process();
 	}
+	else{
+		console.log("Invalid message found in queue, ejecting it");
+	}
+	MessageQueue.shift(); // pop off the processed message
 }
 
 
