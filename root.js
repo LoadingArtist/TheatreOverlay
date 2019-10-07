@@ -501,14 +501,6 @@ streamlabs.on('event', (eventData) => {
 			MessageQueue.push(newEvent);
 			checkMessages();
 		}
-		else{
-			console.log("Unsupported event type '", eventData.type, "' on platform '", platform, "'");	
-			console.log(eventData);
-		}
-	}
-	else{
-		console.log("Unsupported platform ", platform);	
-		console.log(eventData);
 	}
 });
 
