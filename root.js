@@ -362,8 +362,8 @@ var FollowQueue = [];
 ////// CONNECT TO SOCKET & FETCH DATA ///////
 /////////////////////////////////////////////
 
-const socketToken = "XXXXXXXXXXXXXXXXXXXXXXXXXXX"; //Socket token from /socket/token end point
-  
+//const socketToken read from external file
+
 //Connect to socket
 const streamlabs = io("https://sockets.streamlabs.com?token=" + socketToken);
 //Perform Action on event
