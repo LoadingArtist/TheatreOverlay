@@ -499,6 +499,7 @@ streamlabs.on('event', (eventData) => {
 			newEvent.parseJson(eventData);
 			// create a new object of the event and queue this event
 			MessageQueue.push(newEvent);
+			console.log("1) Created new event");
 			checkMessages();
 		}
 		else{
@@ -521,19 +522,25 @@ streamlabs.on('event', (eventData) => {
 //-------- QUEUE SYSTEM --------
   
 function dispatchQueue() {
+	
 	var msg = MessageQueue[0];
+	console.log("2) Displaching Message for event type ", msg.__proto__.type);
 	if(msg){
 		msg.process();
+		console.log("3) Process called for event type ", msg.__proto__.type);
 	}
 	else{
 		console.log("Invalid message found in queue, ejecting it");
 	}
+	console.log("4a) Pre pop off the MessageQueue ", MessageQueue);
 	MessageQueue.shift(); // pop off the processed message
+	console.log("4b) Post pop off the MessageQueue ", MessageQueue);
 }
 
 
 function checkMessages(){
 	if(MessageQueue.length > 0){
+		console.log("Attempting to dispatch message queue of size %d, alertActive: %d alertPause: %d ", MessageQueue.length, alertActive, alertPaused)
 		if (alertActive == false && alertPaused == false){
 			dispatchQueue();
 		} else {
