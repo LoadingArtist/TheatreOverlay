@@ -979,6 +979,7 @@ function donoAlert(msgData, msgAmount, msgMessage, msgType, msgCurrency){
 			_root.MAINCONTAINER.getChildByName("charAnim").banner.txtDetails.text = "cheered " + msgAmount + " bits!";
 			_root.MAINCONTAINER.getChildByName("charAnim").plusAmount.txtAmount.text = "+" + msgAmount;
 		}else{
+			msgAmount = Number.parseFloat(msgAmount).toFixed(2);
 			_root.MAINCONTAINER.getChildByName("charAnim").banner.txtDetails.text = "tipped " + msgCurrency + " " + msgAmount +"!";
 			_root.MAINCONTAINER.getChildByName("charAnim").plusAmount.txtAmount.text = "+" + msgAmount + " " + msgCurrency;
 		}	
