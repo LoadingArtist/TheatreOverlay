@@ -375,6 +375,7 @@ streamlabs.on('connect', function(){
 
 class DonationEvent {
 	parseJson(eventData){
+		console.log("New donation payload: ", eventData);
 		this.from = eventData.message[0].from;
 		this.message = eventData.message[0].message;
 		this.amount = eventData.message[0].amount;
