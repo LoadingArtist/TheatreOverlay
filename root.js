@@ -404,13 +404,12 @@ class SubscriptionEvent {
 		this.months = eventData.message[0].months;
 		this.sub_plan = eventData.message[0].sub_plan; //1000 = tier 1, 2000 = tier 2, Prime
 		this.message = eventData.message[0].message;
-		this.gifter = eventData.message[0].gifter;
+		this.gifter = '';
 
-		if(eventData.message[0].gifter == ""){
-			console.log("No gifter");
-		}else{
-			console.log(eventData.message[0].gifter);
+		if(eventData.message[0].hasOwnProperty("gifter") && eventData.message[0].gifter){
+			this.gifter = eventData.message[0].gifter;
 		}
+
 	}
 
 	process(){
