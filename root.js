@@ -375,6 +375,7 @@ streamlabs.on('connect', function(){
 
 class DonationEvent {
 	parseJson(eventData){
+		console.log("New donation payload: ", eventData);
 		this.from = eventData.message[0].from;
 		this.message = eventData.message[0].message;
 		this.amount = eventData.message[0].amount;
@@ -984,6 +985,7 @@ function donoAlert(msgData, msgAmount, msgMessage, msgType, msgCurrency){
 			_root.MAINCONTAINER.getChildByName("charAnim").banner.txtDetails.text = "cheered " + msgAmount + " bits!";
 			_root.MAINCONTAINER.getChildByName("charAnim").plusAmount.txtAmount.text = "+" + msgAmount;
 		}else{
+			msgAmount = Number.parseFloat(msgAmount).toFixed(2);
 			_root.MAINCONTAINER.getChildByName("charAnim").banner.txtDetails.text = "tipped " + msgCurrency + " " + msgAmount +"!";
 			_root.MAINCONTAINER.getChildByName("charAnim").plusAmount.txtAmount.text = "+" + msgAmount + " " + msgCurrency;
 		}	
