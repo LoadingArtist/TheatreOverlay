@@ -496,6 +496,8 @@ streamlabs.on('event', (eventData) => {
 		let eventClass = StreamLabSupportedEventTypes[platform].find(isType);
 		
 		if (eventClass){
+
+			console.log("Consuming event payload ", eventData);
 			let newEvent = new eventClass();
 			newEvent.parseJson(eventData);
 			// create a new object of the event and queue this event
