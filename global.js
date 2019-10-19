@@ -98,6 +98,7 @@ function endLight(){
 }
 
 //// used for finding random frame for alertPerson thing
-function rngFromID(max) {
-	return Math.floor(Math.random() * max);
+function rngFromID(max, r) {
+	let idRng = new Math.seedrandom(r)
+	return Math.floor(idRng.random() * max);
 }
