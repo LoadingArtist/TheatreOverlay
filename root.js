@@ -562,17 +562,9 @@ var followField = new createjs.Container();
 
 folMC = "";
 
-
-function followerAlert(msgData){
-	
-	//SET STATUS AND DATA
-	alertActive = true;
-	
-	Math.seedrandom(msgData); //create a random seed based on the user ID number
-	
-	
+function createWalkInCharacter(name){
 	let folMC = new lib.X_FOLLOW();
-	folMC.name = msgData;
+	folMC.name = name;
 
 	followField.addChild(folMC);
 	
@@ -605,12 +597,22 @@ function followerAlert(msgData){
 		}, 100)	
 		
 	}, 100);
+
+	return folMC;
+}
+
+
+function followerAlert(msgData){
 	
+	//SET STATUS AND DATA
+	alertActive = true;
+	
+	Math.seedrandom(msgData); //create a random seed based on the user ID number
+	let folMC = createWalkInCharacter(msgData);
 
 	// REMOVE ITSELF AFTER SOME TIME
 	setTimeout(() => {
 		followField.removeChild(folMC);
-	
 	}, 20000);
 
 }
