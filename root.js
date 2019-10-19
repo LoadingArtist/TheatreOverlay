@@ -572,11 +572,11 @@ function createWalkInCharacter(name){
 	let bodyNum = rngFromID(followField.getChildByName(folMC.name).followerPerson.body.totalFrames);
 	let hatNum = rngFromID(followField.getChildByName(folMC.name).followerPerson.hat.totalFrames);
 	
-	console.log("Follow: " + msgData + " | bodyNum: " + bodyNum + " | hatNum: " + hatNum);
+	console.log("Follow: " + name + " | bodyNum: " + bodyNum + " | hatNum: " + hatNum);
 
 	// add username/changing clothes
 	setTimeout(() => {
-		followField.getChildByName(folMC.name).followerPerson.banner.txtUsername.text = msgData;
+		followField.getChildByName(folMC.name).followerPerson.banner.txtUsername.text = name;
 		followField.getChildByName(folMC.name).followerPerson.body.gotoAndStop(bodyNum);
 		followField.getChildByName(folMC.name).followerPerson.hat.gotoAndStop(hatNum);
 		
