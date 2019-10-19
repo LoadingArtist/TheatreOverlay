@@ -6,7 +6,6 @@ const _root = this;
 /// Variables
 
 var currentPriority = 0; // Global 'current action' priority to compare against
-var idRng = new Math.seedrandom(None);// Random for RND
 
 
 // Data structure containing everything we might need to know about each action
