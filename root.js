@@ -421,8 +421,7 @@ function executeCallbackDistribution(distributionData, callback, finishedCallBac
   
 function randomRaider(){
 	
-	let r = Math.random().toString(36).substring(7);
-	idRng = new Math.seedrandom(r); //create a random seed based on the user ID number
+	let r = Math.random().toString(36).substring(7); //create a random seed based on the user ID number
 
 	let raiderSingle = new lib.X_RAIDER();
 
@@ -433,8 +432,8 @@ function randomRaider(){
 	console.log("hello does this work?", raiderSingle.y);
 
 	// get random numbers for character customization
-	let bodyNum = rngFromID(raiderSingle.followerPerson.body.totalFrames, id);
-	let hatNum = rngFromID(raiderSingle.followerPerson.hat.totalFrames, id);
+	let bodyNum = rngFromID(raiderSingle.followerPerson.body.totalFrames, r);
+	let hatNum = rngFromID(raiderSingle.followerPerson.hat.totalFrames, r);
 
 
 	// add username/changing clothes	
