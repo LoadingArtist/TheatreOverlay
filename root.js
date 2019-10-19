@@ -6,6 +6,7 @@ const _root = this;
 /// Variables
 
 var currentPriority = 0; // Global 'current action' priority to compare against
+var idRng = new Math.seedrandom(None);// Random for RND
 
 
 // Data structure containing everything we might need to know about each action
@@ -421,7 +422,7 @@ function executeCallbackDistribution(distributionData, callback, finishedCallBac
 function randomRaider(){
 	
 	let r = Math.random().toString(36).substring(7);
-	Math.seedrandom(r); //create a random seed based on the user ID number
+	idRng = new Math.seedrandom(r); //create a random seed based on the user ID number
 
 	let raiderSingle = new lib.X_RAIDER();
 
@@ -432,8 +433,8 @@ function randomRaider(){
 	console.log("hello does this work?", raiderSingle.y);
 
 	// get random numbers for character customization
-	let bodyNum = rngFromID(raiderSingle.followerPerson.body.totalFrames);
-	let hatNum = rngFromID(raiderSingle.followerPerson.hat.totalFrames);
+	let bodyNum = rngFromID(raiderSingle.followerPerson.body.totalFrames, id);
+	let hatNum = rngFromID(raiderSingle.followerPerson.hat.totalFrames, id);
 
 
 	// add username/changing clothes	
