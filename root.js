@@ -452,9 +452,9 @@ function randomRaider(){
 function spawnRaider(num){
 	/* This is the point where you would spawn your Raider icon to represent someone raiding you! */
 	console.log("Spawn raider here", num);	
-	console.log(rnd);
+	//console.log(rnd); //<-- this causes an error (no rnd exists)
 
-	let raider = randomRaider()
+	let raider = randomRaider();
 	//debugger;
 	raidField.addChild(raider);
 
@@ -1196,12 +1196,12 @@ function raidAlert(msgData, msgRaiders){
 	waitTime = 1000;
 	
 	// RAIDERS CODE
-	delayBetweenCallbacksPerSegment = [0.1, 0.3, 1]; // seconds
-	distributionPerSegment = [0.20, 0.5, 1];  // the percentage of count to callback per segment, the last segment is assumed to be what is left over
-	callbackCount = msgRaiders;
-	dd = new DistributionData(callbackCount, delayBetweenCallbacksPerSegment, distributionPerSegment);
+	//delayBetweenCallbacksPerSegment = [0.1, 0.3, 1]; // seconds
+	//distributionPerSegment = [0.20, 0.5, 1];  // the percentage of count to callback per segment, the last segment is assumed to be what is left over
+	//callbackCount = msgRaiders;
+	//dd = new DistributionData(callbackCount, delayBetweenCallbacksPerSegment, distributionPerSegment);
 
-	executeCallbackDistribution(dd, spawnRaider, done);
+	//executeCallbackDistribution(dd, spawnRaider, done);
 	
 	//---------------------
 	
