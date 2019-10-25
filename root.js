@@ -417,7 +417,10 @@ function executeCallbackDistribution(distributionData, callback, finishedCallBac
     }
   }
   
-  
+var raidField = new createjs.Container();
+raidField.regX = 0;
+_root.addChild(raidField);
+
 function randomRaider(){
 	
 	let r = Math.random().toString(36).substring(7);
@@ -438,33 +441,26 @@ function randomRaider(){
 
 	// add username/changing clothes	
 	setTimeout(() => {
-		raiderSingle.followerPerson.body.gotoAndStop(bodyNum);
-		raiderSingle.followerPerson.hat.gotoAndStop(hatNum);
+		raidField.getChildByName(folMC.name).followerPerson.body.gotoAndStop(bodyNum);
+		raidField.getChildByName(folMC.name).followerPerson.hat.gotoAndStop(hatNum);
 		}, 100)	
 		
 	return raiderSingle;
-}
-  
-var raidField = new createjs.Container();
-raidField.regX = 0;
-_root.addChild(raidField);
-let raiderLibrary = [];
-const raiderLibraryCount = 30;
-
-for (let i=0; i<raiderLibraryCount; i++){
-	raiderLibrary.push(randomRaider());
 }
 
 
 function spawnRaider(num){
 	/* This is the point where you would spawn your Raider icon to represent someone raiding you! */
 	console.log("Spawn raider here", num);	
-	let rnd = getRandomInt(0,raiderLibraryCount);
+	//console.log(rnd); //<-- this causes an error (no rnd exists)
 
-	console.log(rnd);
-	
+	let raider = randomRaider();
 	//debugger;
-	raidField.addChild(raiderLibrary[parseInt(rnd, 10)]);
+	raidField.addChild(raider);
+
+	setTimeout(() => {
+		raidField.removeChild(raider);
+		}, 10000)	
 }
   
   function done(){
@@ -1200,12 +1196,12 @@ function raidAlert(msgData, msgRaiders){
 	waitTime = 1000;
 	
 	// RAIDERS CODE
-	delayBetweenCallbacksPerSegment = [0.1, 0.3, 1]; // seconds
-	distributionPerSegment = [0.20, 0.5, 1];  // the percentage of count to callback per segment, the last segment is assumed to be what is left over
-	callbackCount = msgRaiders;
-	dd = new DistributionData(callbackCount, delayBetweenCallbacksPerSegment, distributionPerSegment);
+	//delayBetweenCallbacksPerSegment = [0.1, 0.3, 1]; // seconds
+	//distributionPerSegment = [0.20, 0.5, 1];  // the percentage of count to callback per segment, the last segment is assumed to be what is left over
+	//callbackCount = msgRaiders;
+	//dd = new DistributionData(callbackCount, delayBetweenCallbacksPerSegment, distributionPerSegment);
 
-	executeCallbackDistribution(dd, spawnRaider, done);
+	//executeCallbackDistribution(dd, spawnRaider, done);
 	
 	//---------------------
 	
