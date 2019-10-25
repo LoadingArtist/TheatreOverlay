@@ -423,8 +423,7 @@ _root.addChild(raidField);
 
 function randomRaider(){
 	
-	let r = Math.random().toString(36).substring(7);
-	Math.seedrandom(r); //create a random seed based on the user ID number
+	let r = Math.random().toString(36).substring(7);//create a random seed based on the user ID number
 
 	let raiderSingle = new lib.X_RAIDER();
 
@@ -435,8 +434,8 @@ function randomRaider(){
 	console.log("hello does this work?", raiderSingle.y);
 
 	// get random numbers for character customization
-	let bodyNum = rngFromID(raiderSingle.followerPerson.body.totalFrames);
-	let hatNum = rngFromID(raiderSingle.followerPerson.hat.totalFrames);
+	let bodyNum = rngFromID(raiderSingle.followerPerson.body.totalFrames,r);
+	let hatNum = rngFromID(raiderSingle.followerPerson.hat.totalFrames,r);
 
 
 	// add username/changing clothes	
@@ -707,7 +706,7 @@ function followerAlert(msgData){
 	//SET STATUS AND DATA
 	alertActive = true;
 	
-	Math.seedrandom(msgData); //create a random seed based on the user ID number
+	
 	
 	
 	let folMC = new lib.X_FOLLOW();
@@ -716,8 +715,8 @@ function followerAlert(msgData){
 	followField.addChild(folMC);
 	
 	// get random numbers for character customization
-	let bodyNum = rngFromID(followField.getChildByName(folMC.name).followerPerson.body.totalFrames);
-	let hatNum = rngFromID(followField.getChildByName(folMC.name).followerPerson.hat.totalFrames);
+	let bodyNum = rngFromID(followField.getChildByName(folMC.name).followerPerson.body.totalFrames,msgData);
+	let hatNum = rngFromID(followField.getChildByName(folMC.name).followerPerson.hat.totalFrames,msgData);
 	
 	console.log("Follow: " + msgData + " | bodyNum: " + bodyNum + " | hatNum: " + hatNum);
 
@@ -784,13 +783,11 @@ function subAlert(msgData, msgMonths, msgPlan, msgMessage, msgGifter){
 		
 	//ANIMATION
 	triggerSequence("sub");
-
-	Math.seedrandom(msgData); //create a random seed based on the user ID number
 	
 	
 	// create random numbers for customization
-	let bodyNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.totalFrames);	
-	let hatNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.totalFrames);
+	let bodyNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.totalFrames, msgData);	
+	let hatNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.totalFrames, msgData);
 	
 	console.log("Sub: " + msgData + " | bodyNum: " + bodyNum + " | hatNum: " + hatNum);
 
@@ -804,9 +801,8 @@ function subAlert(msgData, msgMonths, msgPlan, msgMessage, msgGifter){
 			//waitTime = 3000; //to make it stay a bit longer when it's a gifted sub?
 			
 			//Generate gifter person customization
-			Math.seedrandom(msgGifter);
-			let bodyNumGifter = rngFromID(subField.getChildByName(subMC.name).banner.bannerGifted.gifter.body.totalFrames);	
-			let hatNumGifter = rngFromID(subField.getChildByName(subMC.name).banner.bannerGifted.gifter.hat.totalFrames);
+			let bodyNumGifter = rngFromID(subField.getChildByName(subMC.name).banner.bannerGifted.gifter.body.totalFrames, msgGifter);	
+			let hatNumGifter = rngFromID(subField.getChildByName(subMC.name).banner.bannerGifted.gifter.hat.totalFrames, msgGifter);
 			
 			console.log("Gifter: " + msgGifter + " | bodyNum: " + bodyNumGifter + " | hatNum: " + hatNumGifter);
 			
@@ -984,11 +980,11 @@ function pledgeAlert(msgData, msgAmount, msgFormattedAmount, msgCurrency){
 
 	//CHARACTER CUSTOMIZATION
 	 
-	Math.seedrandom(msgData); //create a random seed based on the user ID number
+
 	
 	// create random numbers for customization
-	let bodyNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.totalFrames);	
-	let hatNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.totalFrames);
+	let bodyNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.totalFrames, msgData);	
+	let hatNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.totalFrames, msgData);
 	
 	console.log("Patreon: " + msgData + " | bodyNum: " + bodyNum + " | hatNum: " + hatNum);
 	
@@ -1083,11 +1079,11 @@ function donoAlert(msgData, msgAmount, msgMessage, msgType, msgCurrency){
 		//ANIMATION
 		triggerSequence("dono");
 		
-		Math.seedrandom(msgData); //create a random seed based on the user ID number
+		 //create a random seed based on the user ID number
 	
 		// create random numbers for customization
-		let bodyNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.totalFrames);	
-		let hatNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.totalFrames);
+		let bodyNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.totalFrames, msgData);	
+		let hatNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.totalFrames, msgData);
 		
 		console.log("Dono: " + msgData + " | bodyNum: " + bodyNum + " | hatNum: " + hatNum);
 		
@@ -1242,11 +1238,11 @@ function hostAlert(msgData, msgViewers){
 	//ANIMATION
 	triggerSequence("host");
 
-	Math.seedrandom(msgData); //create a random seed based on the user ID number
+	 //create a random seed based on the user ID number
 	
 	// create random numbers for customization
-	let bodyNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.totalFrames);	
-	let hatNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.totalFrames);
+	let bodyNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.totalFrames, msgData);	
+	let hatNum = rngFromID(_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.totalFrames, msgData);
 	
 	console.log("Host: " + msgData + " | bodyNum: " + bodyNum + " | hatNum: " + hatNum);
 
