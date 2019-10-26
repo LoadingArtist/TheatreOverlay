@@ -699,25 +699,25 @@ var followField = new createjs.Container();
 folMC = "";
 
 
-function followerAlert(msgData){
+function followerAlert(msgUsername){
 	
 	//SET STATUS AND DATA
 	alertActive = true;
 
 	let folMC = new lib.X_FOLLOW();
-	folMC.name = msgData;
+	folMC.name = msgUsername;
 
 	followField.addChild(folMC);
 
 	//CHARACTER CUSTOMIZATION
-	let bodyNum = frameFromUsername(msgData, followField.getChildByName(folMC.name).followerPerson.body.totalFrames);
-	let hatNum = frameFromUsername(msgData, followField.getChildByName(folMC.name).followerPerson.hat.totalFrames);
+	let bodyNum = frameFromUsername(msgUsername, followField.getChildByName(folMC.name).followerPerson.body.totalFrames);
+	let hatNum = frameFromUsername(msgUsername, followField.getChildByName(folMC.name).followerPerson.hat.totalFrames);
 	
-	console.log("Follow: " + msgData + " | bodyNum: " + bodyNum + " | hatNum: " + hatNum);
+	console.log("Follow: " + msgUsername + " | bodyNum: " + bodyNum + " | hatNum: " + hatNum);
 
 	// add username/changing clothes
 	setTimeout(() => {
-		followField.getChildByName(folMC.name).followerPerson.banner.txtUsername.text = msgData;
+		followField.getChildByName(folMC.name).followerPerson.banner.txtUsername.text = msgUsername;
 		followField.getChildByName(folMC.name).followerPerson.body.gotoAndStop(bodyNum);
 		followField.getChildByName(folMC.name).followerPerson.hat.gotoAndStop(hatNum);
 		
@@ -759,11 +759,11 @@ var subField = new createjs.Container();
 
 subMC = "";
 
-function subAlert(msgData, msgMonths, msgPlan, msgMessage, msgGifter){
+function subAlert(msgUsername, msgMonths, msgPlan, msgMessage, msgGifter){
 	
 	subField.removeAllChildren();
 	let subMC = new lib.X_SUB_DROP();
-	subMC.name = msgData;
+	subMC.name = msgUsername;
 
 	subField.addChild(subMC);
 	
@@ -780,10 +780,10 @@ function subAlert(msgData, msgMonths, msgPlan, msgMessage, msgGifter){
 	triggerSequence("sub");
 
 	//CHARACTER CUSTOMIZATION
-	let bodyNum = frameFromUsername(msgData, _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.totalFrames);
-	let hatNum = frameFromUsername(msgData, _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.totalFrames);
+	let bodyNum = frameFromUsername(msgUsername, _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.totalFrames);
+	let hatNum = frameFromUsername(msgUsername, _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.totalFrames);
 	
-	console.log("Sub: " + msgData + " | bodyNum: " + bodyNum + " | hatNum: " + hatNum);
+	console.log("Sub: " + msgUsername + " | bodyNum: " + bodyNum + " | hatNum: " + hatNum);
 
 	//IS GIFTED?
 	setTimeout(() => {
@@ -811,10 +811,10 @@ function subAlert(msgData, msgMonths, msgPlan, msgMessage, msgGifter){
 		}
 		
 		//FILL DATA
-		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.txtNameAbove.text = msgData;
-		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.txtNameAboveShadow.text = msgData;
+		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.txtNameAbove.text = msgUsername;
+		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.txtNameAboveShadow.text = msgUsername;
 		
-		subField.getChildByName(subMC.name).banner.bannerSubBG.txtUsername.text = msgData;
+		subField.getChildByName(subMC.name).banner.bannerSubBG.txtUsername.text = msgUsername;
 		
 		//FILL CUSTOMIZATION
 		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.gotoAndStop(bodyNum);
@@ -957,11 +957,11 @@ function subAlert(msgData, msgMonths, msgPlan, msgMessage, msgGifter){
 
 // PATREON PLEDGE
 
-function pledgeAlert(msgData, msgAmount, msgFormattedAmount, msgCurrency){
+function pledgeAlert(msgUsername, msgAmount, msgFormattedAmount, msgCurrency){
 	
 	subField.removeAllChildren();
 	let subMC = new lib.X_SUB_DROP();
-	subMC.name = msgData;
+	subMC.name = msgUsername;
 
 	subField.addChild(subMC);
 
@@ -973,10 +973,10 @@ function pledgeAlert(msgData, msgAmount, msgFormattedAmount, msgCurrency){
 	
 
 	//CHARACTER CUSTOMIZATION
-	let bodyNum = frameFromUsername(msgData, _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.totalFrames);
-	let hatNum = frameFromUsername(msgData, _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.totalFrames);
+	let bodyNum = frameFromUsername(msgUsername, _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.totalFrames);
+	let hatNum = frameFromUsername(msgUsername, _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.totalFrames);
 	
-	console.log("Patreon: " + msgData + " | bodyNum: " + bodyNum + " | hatNum: " + hatNum);
+	console.log("Patreon: " + msgUsername + " | bodyNum: " + bodyNum + " | hatNum: " + hatNum);
 	
 	setTimeout(() => {
 		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.gotoAndStop(bodyNum);
@@ -995,7 +995,7 @@ function pledgeAlert(msgData, msgAmount, msgFormattedAmount, msgCurrency){
 			
 	
 	//FILL DATA
-	let nameSplit = msgData.split(" "); //get first name only
+	let nameSplit = msgUsername.split(" "); //get first name only
 	
 		subField.getChildByName(subMC.name).banner.bannerSubBG.txtUsername.text = nameSplit[0];
 		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.txtNameAbove.text = nameSplit[0];
@@ -1043,7 +1043,7 @@ this.skipDono = function(){
 
 
 
-function donoAlert(msgData, msgAmount, msgMessage, msgType, msgCurrency){
+function donoAlert(msgUsername, msgAmount, msgMessage, msgType, msgCurrency){
 
 	waitTime = 3000;	
 	
@@ -1070,15 +1070,15 @@ function donoAlert(msgData, msgAmount, msgMessage, msgType, msgCurrency){
 		triggerSequence("dono");
 
 		//CHARACTER CUSTOMIZATION
-		let bodyNum = frameFromUsername(msgData, _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.totalFrames);
-		let hatNum = frameFromUsername(msgData, _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.totalFrames);
+		let bodyNum = frameFromUsername(msgUsername, _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.totalFrames);
+		let hatNum = frameFromUsername(msgUsername, _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.totalFrames);
 		
-		console.log("Dono: " + msgData + " | bodyNum: " + bodyNum + " | hatNum: " + hatNum);
+		console.log("Dono: " + msgUsername + " | bodyNum: " + bodyNum + " | hatNum: " + hatNum);
 		
 		//FILL DATA
-		_root.MAINCONTAINER.getChildByName("charAnim").banner.txtUsername.text = msgData;
-		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.txtNameAbove.text = msgData;
-		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.txtNameAboveShadow.text = msgData;
+		_root.MAINCONTAINER.getChildByName("charAnim").banner.txtUsername.text = msgUsername;
+		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.txtNameAbove.text = msgUsername;
+		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.txtNameAboveShadow.text = msgUsername;
 		
 		//FILL CUSTOMIZATION
 		
@@ -1169,7 +1169,7 @@ function donoAlert(msgData, msgAmount, msgMessage, msgType, msgCurrency){
 
 // RAID ALERT
 
-function raidAlert(msgData, msgRaiders){
+function raidAlert(msgUsername, msgRaiders){
 	
 	
 	console.log("Starting");
@@ -1189,13 +1189,13 @@ function raidAlert(msgData, msgRaiders){
 	
 	//---------------------
 	
-	console.log("Raider is: " + msgData + " | with this many raiders: " + msgRaiders );
+	console.log("Raider is: " + msgUsername + " | with this many raiders: " + msgRaiders );
 	
 	//ANIMATION
 	triggerSequence("raid");
 
-	_root.MAINCONTAINER.getChildByName("charAnim").txtUsername.text = msgData;
-	_root.MAINCONTAINER.getChildByName("charAnim").txtUsernameShadow.text = msgData;
+	_root.MAINCONTAINER.getChildByName("charAnim").txtUsername.text = msgUsername;
+	_root.MAINCONTAINER.getChildByName("charAnim").txtUsernameShadow.text = msgUsername;
 	_root.MAINCONTAINER.getChildByName("charAnim").txtDetails.text = "IS RAIDING WITH " + msgRaiders + " PEOPLE";
 
 
@@ -1218,7 +1218,7 @@ function raidAlert(msgData, msgRaiders){
 
 // HOST ALERT
 
-function hostAlert(msgData, msgViewers){
+function hostAlert(msgUsername, msgViewers){
 	
 	//SET STATUS AND DATA
 	alertActive = true;	
@@ -1227,17 +1227,17 @@ function hostAlert(msgData, msgViewers){
 	triggerSequence("host");
 
 	//CHARACTER CUSTOMIZATION
-	let bodyNum = frameFromUsername(msgData, _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.totalFrames);
-	let hatNum = frameFromUsername(msgData, _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.totalFrames);
+	let bodyNum = frameFromUsername(msgUsername, _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.totalFrames);
+	let hatNum = frameFromUsername(msgUsername, _root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.totalFrames);
 	
-	console.log("Host: " + msgData + " | bodyNum: " + bodyNum + " | hatNum: " + hatNum);
+	console.log("Host: " + msgUsername + " | bodyNum: " + bodyNum + " | hatNum: " + hatNum);
 
 	setTimeout(() => {
 		
 		//FILL DATA
-		_root.MAINCONTAINER.getChildByName("charAnim").banner.txtUsername.text = msgData;
-		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.txtNameAbove.text = msgData;
-		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.txtNameAboveShadow.text = msgData;
+		_root.MAINCONTAINER.getChildByName("charAnim").banner.txtUsername.text = msgUsername;
+		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.txtNameAbove.text = msgUsername;
+		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.txtNameAboveShadow.text = msgUsername;
 		
 		//FILL DETAIL TEXT
 		if (msgViewers > 1){
