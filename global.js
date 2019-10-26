@@ -97,7 +97,8 @@ function endLight(){
 	stage.children[0].lightReset();
 }
 
-//// used for finding random frame for alertPerson thing
-function rngFromID(max) {
-	return Math.floor(Math.random() * max);
+//// used for finding consistent frame based on the username for alertPerson thing
+function frameFromUsername(username, maxFrame) {
+	let checksum = username.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
+	return Math.abs(checksum % maxFrame);
 }
