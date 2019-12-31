@@ -79,42 +79,63 @@ var commands = {
 //// SET MODE (generic/draw/game)
 	
 	xxxgeneric: function () {
-		stage.children[0].gotoAndStop("_DEFAULT");
+		_root.MAINCONTAINER.y = 0;
+		_root.MAINCONTAINER.visible = true;
+		_root.AUDCONTAINER.visible = true;
+		_root.theTable.visible = true;
+		_root.seats.visible = true;
+		_root.backCurtain.visible = true;
+		
 		actions.idle.animation = "X_DEFAULT";
 		endAnim();
-		tableAnim("normal");
 	},
 	  
 	xxxdraw: function () {
-		stage.children[0].gotoAndStop("_DEFAULT");
+		_root.MAINCONTAINER.y = 0;
+		_root.MAINCONTAINER.visible = true;
+		_root.AUDCONTAINER.visible = true;
+		_root.theTable.visible = true;
+		_root.seats.visible = true;
+		_root.backCurtain.visible = true;
+		
 		actions.idle.animation = "D_DEFAULT";
 		endAnim();
-		tableAnim("normal");
 	},
 	  
 	xxxgame: function () {
-		stage.children[0].gotoAndStop("_GAME");
+		_root.MAINCONTAINER.y = 127;
+		_root.MAINCONTAINER.visible = true;
+		_root.AUDCONTAINER.visible = false;
+		_root.theTable.visible = false;
+		_root.seats.visible = false;
+		_root.backCurtain.visible = false;
+		
 		actions.idle.animation = "G_DEFAULT";
 		endAnim();
-		tableAnim("normal");
 	},
 	  
 	xxxhide: function () {
-		stage.children[0].gotoAndStop("_HIDE");
+		_root.MAINCONTAINER.visible = false;
+		_root.AUDCONTAINER.visible = false;
+		_root.theTable.visible = false;
+		_root.seats.visible = false;
+		_root.backCurtain.visible = false;
+
 		endAnim();
-		tableAnim("normal");
 	},
 	  
 	xxxsing: function () {
+		_root.MAINCONTAINER.visible = true;
 		actions.idle.animation = "X_SING_DEFAULT";
 		endAnim();
-		tableAnim("smoke");
+		
 	},
 	  
 	xxxguitar: function () {
+		_root.MAINCONTAINER.visible = true;
 		actions.idle.animation = "X_GUITAR_01";
 		endAnim();
-		tableAnim("smoke");
+		
 	},
 	  
 	//// CURTAINS
@@ -680,7 +701,17 @@ function checkMessages(){
 	}
 }
 
+function checkNotifPaused(){
+	if (alertPaused == true){
+		_root.notifPaused.visible = true;
+	}else{
+		_root.notifPaused.visible = false;
+	}
+	
+	setTimeout(checkNotifPaused, 1000);
+}
 
+checkNotifPaused();
 
 //////////////////////////////
 ////// PLAY THE ALERTS ///////
