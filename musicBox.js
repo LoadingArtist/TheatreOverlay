@@ -1,7 +1,7 @@
 that = this;
 
 function getSong(){
-	fetch('./OBSCurrentSongV1.28/currentsong.txt')
+	fetch('./OBSCurrentSongV1.28/currentsong.txt', {headers: NoCacheHeaders})
 	.then(response => response.text())
 	.then(function(currentSong){
 		that.musicBox.txtSongContainer.txtSong.text = currentSong;
