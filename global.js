@@ -3,8 +3,8 @@ function getRandomInt(min, max) {
 }
 
 var NoCacheHeaders = new Headers();
-myHeaders.append('pragma', 'no-cache');
-myHeaders.append('cache-control', 'no-cache');
+NoCacheHeaders.append('pragma', 'no-cache');
+NoCacheHeaders.append('cache-control', 'no-cache');
 
 function playRandomFrame(layer,frameRange){
 	let i=getRandomInt(frameRange[0],frameRange[1]);
