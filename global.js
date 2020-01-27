@@ -2,6 +2,10 @@ function getRandomInt(min, max) {
     return Math.random() * (max - min) + min;
 }
 
+var NoCacheHeaders = new Headers();
+NoCacheHeaders.append('pragma', 'no-cache');
+NoCacheHeaders.append('cache-control', 'no-cache');
+
 function playRandomFrame(layer,frameRange){
 	let i=getRandomInt(frameRange[0],frameRange[1]);
 	layer.gotoAndPlay(i);
