@@ -516,7 +516,7 @@ var FollowQueue = [];
 //const socketToken read from external file
 
 //Connect to socket
-const streamlabs = io("https://sockets.streamlabs.com?token=" + socketToken);
+const streamlabs = io("https://sockets.streamlabs.com?token=" + socketToken, {transports: ['websocket']});
 //Perform Action on event
 
 // CHECK IF WE ARE CONNECTED
