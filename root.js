@@ -539,6 +539,23 @@ class DonationEvent {
 }
 DonationEvent.prototype.type = 'donation';
 
+class StreamlabsCustomEvent {
+	parseJson(eventData){
+		console.log("New streamlabs api payload: ", eventData.message[0]);
+		this.type = eventData.message[0].type;
+		this.message = eventData.message[0].message;
+		this.user_message = eventData.message[0].user_message;
+		this.image_href = eventData.message[0].image_href;
+	}
+
+	process(){
+		if (this.type === 'merch') {
+			storeAlert(this.message, this.user_message);
+		}
+	}
+}
+StreamlabsCustomEvent.prototype.type = 'custom';
+
 class FollowEvent {
 	parseJson(eventData){
 		this.name = eventData.message[0].name;
@@ -625,7 +642,7 @@ PledgeEvent.prototype.type = 'pledge';
 
 StreamLabSupportedEventTypes = { 
 	"twitch_account" : [DonationEvent, SubscriptionEvent, FollowEvent, HostEvent, BitsEvent, RaidEvent],
-	"streamlabs" : [DonationEvent],
+	"streamlabs" : [DonationEvent, StreamlabsCustomEvent],
 	"patreon" : [PledgeEvent],
 	"youtube_account" : {},
 	"mixer_account" : {}
@@ -1195,6 +1212,74 @@ function donoAlert(msgUsername, msgAmount, msgMessage, msgType, msgCurrency){
 	
 }
 
+
+
+function storeAlert(msgMessage, msgUserMessage){
+	
+	waitTime = 3000;
+	
+	//SET STATUS AND DATA
+	alertActive = true;
+	
+	//ANIMATION
+	triggerSequence("dono");
+	
+	//FILL DATA
+	_root.MAINCONTAINER.getChildByName("charAnim").banner.txtUsername.text = "LoadingArtist Store";
+	_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.txtNameAbove.text = "";
+	_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.txtNameAboveShadow.text = "";
+	
+	//FILL CUSTOMIZATION
+	
+	setTimeout(() => {
+		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.body.gotoAndStop(15); // hardcoded for current bodies
+		_root.MAINCONTAINER.getChildByName("charAnim").alertPerson.hat.gotoAndStop(61); // hardcoded for current hats
+	}, 100);
+	
+	// PARSE MESSAGE
+	_root.MAINCONTAINER.getChildByName("charAnim").plusAmount.txtAmount.text = "+" + msgMessage + " USD";
+	_root.MAINCONTAINER.getChildByName("charAnim").banner.txtDetails.text = "New store order for USD " + msgMessage;
+	
+	setTimeout(() => {
+		_root.DONOCONTAINER.addChild(new lib.X_DONO_0());
+	}, 100); //was 4500//waits before firing the above donation animation (giving hatguy enough time to duck down)
+	
+	setTimeout(() => {
+		if (msgUserMessage){
+			
+			if (msgUserMessage.length <= 20){
+				_root.MAINCONTAINER.getChildByName("charAnim").alertSpeech.gotoAndStop("tiny");
+				waitTime = 3000;
+			}else if (msgUserMessage.length <= 45){
+				_root.MAINCONTAINER.getChildByName("charAnim").alertSpeech.gotoAndStop("small");
+				waitTime = 4000;
+			}else if (msgUserMessage.length <= 75){
+				_root.MAINCONTAINER.getChildByName("charAnim").alertSpeech.gotoAndStop("medium");
+				waitTime = 5000;
+			}else if (msgUserMessage.length <= 200){
+				_root.MAINCONTAINER.getChildByName("charAnim").alertSpeech.gotoAndStop("big");
+				waitTime = 6000;
+			}else if (msgUserMessage.length <= 350){
+				_root.MAINCONTAINER.getChildByName("charAnim").alertSpeech.gotoAndStop("huge");
+				waitTime = 8000;
+			}else{
+				_root.MAINCONTAINER.getChildByName("charAnim").alertSpeech.gotoAndStop("huge");
+				_root.MAINCONTAINER.getChildByName("charAnim").alertSpeech.txtMessage.maxWidth = 780;
+				waitTime = 8000;
+			}
+			
+			_root.MAINCONTAINER.getChildByName("charAnim").alertSpeech.txtMessage.text = msgUserMessage.replace(/\|\|/g, "\n");
+			
+			//centers the text to the speech bubble
+			var txtHeight = _root.MAINCONTAINER.getChildByName("charAnim").alertSpeech.txtMessage.getMeasuredHeight();
+			_root.MAINCONTAINER.getChildByName("charAnim").alertSpeech.txtMessage.y = _root.MAINCONTAINER.getChildByName("charAnim").alertSpeech.speechBG.y - txtHeight / 2;
+		}else{
+			_root.MAINCONTAINER.getChildByName("charAnim").alertSpeech.gotoAndStop("off");
+			_root.MAINCONTAINER.getChildByName("charAnim").alertSpeech.txtMessage.text = "";
+		}
+	}, 100);
+	
+}
 
 
 
