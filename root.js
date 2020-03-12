@@ -155,14 +155,18 @@ var commands = {
 		_root.CURCONTAINER.getChildByName("curAnim").gotoAndPlay("open");
 	},
 	  
-	xoutro: function () {
+	xclose: function () {
 		_root.CURCONTAINER.removeAllChildren();
 		let curName = new lib.CUR_OUTRO();
 		curName.name = "curAnim";
 		_root.CURCONTAINER.addChild(curName);
 	},
 	
+	xoutro: function () {
+		_root.CURCONTAINER.getChildByName("curAnim").gotoAndPlay("outro");
+	},
 	
+ 
 	///// THEME CHOICE
 	//
 	//tttnormal: function () {
@@ -941,6 +945,10 @@ function subAlert(msgUsername, msgMonths, msgPlan, msgMessage, msgGifter){
 		}else if (msgMonths >= 24 && msgMonths < 36){
 			_root.MAINCONTAINER.getChildByName("charAnim").badgeMC.gotoAndStop("badge24");
 
+			
+		}else if (msgMonths >= 36 && msgMonths < 48){
+			_root.MAINCONTAINER.getChildByName("charAnim").badgeMC.gotoAndStop("badge36");
+			_root.MAINCONTAINER.getChildByName("charAnim").badgeOnTopMC.gotoAndStop("badge36");
 			
 		}else{
 			console.log("ELSE??? msgMonths: " + msgMonths);
