@@ -42,7 +42,11 @@ function tableHide(){
 }
 
 function tableShow(){
-	stage.children[0].theTable.visible = true;
+	if (window.isTableHere == false){
+		stage.children[0].theTable.visible = false;
+	}else{
+		stage.children[0].theTable.visible = true;
+	}
 }
 
 function tableAnim(anim){
