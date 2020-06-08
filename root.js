@@ -6,7 +6,7 @@ const _root = this;
 /// Variables
 
 var currentPriority = 0; // Global 'current action' priority to compare against
-
+window.isTableHere = true;
 
 // Data structure containing everything we might need to know about each action
 var actions = {
@@ -62,13 +62,12 @@ var actions = {
   
   // Gaming Stuff
   //gscream:     { rank: 6, animation: "G_SCREAM" }, //ignore until better volume detection in place
-  gintense01: { rank: 5, animation: "G_INTENSE_01" },
-  gintense02: { rank: 5, animation: "G_INTENSE_02" },
+  gintense:    { rank: 5, animation: "G_INTENSE" },
   gretreat:    { rank: 3, animation: "G_RETREAT" },  
   
-  gplay:    { rank: 1, animation: "G_PLAY" },
-  gafk:     { rank: 1, animation: "G_AFK" },
-  gdefault: { rank: 1, animation: "G_DEFAULT" },
+  gplay:       { rank: 1, animation: "G_PLAY" },
+  gafk:        { rank: 1, animation: "G_AFK" },
+  gdefault:    { rank: 1, animation: "G_DEFAULT" },
 
   // Idle
   idle:      { rank: 0, animation: "X_DEFAULT" }
@@ -87,6 +86,7 @@ var commands = {
 		_root.backCurtain.visible = true;
 		
 		actions.idle.animation = "X_DEFAULT";
+		isTableHere = true;
 		endAnim();
 	},
 	  
@@ -99,6 +99,7 @@ var commands = {
 		_root.backCurtain.visible = true;
 		
 		actions.idle.animation = "D_DEFAULT";
+		isTableHere = true;
 		endAnim();
 	},
 	  
@@ -111,6 +112,7 @@ var commands = {
 		_root.backCurtain.visible = false;
 		
 		actions.idle.animation = "G_DEFAULT";
+		isTableHere = false;
 		endAnim();
 	},
 	  
@@ -120,7 +122,8 @@ var commands = {
 		_root.theTable.visible = false;
 		_root.seats.visible = false;
 		_root.backCurtain.visible = false;
-
+		
+		isTableHere = false;
 		endAnim();
 	},
 	  
@@ -330,7 +333,8 @@ this.curtainReset = function(){
 /// Init
 
 // Listen for keyboard events
-window.addEventListener("keydown", handleKey);
+window.addEventListener("keydown", handleKey); //this was the old version that didn't work with OBS 25
+//document.addEventListener("keydown", handleKey);
 
 
 
