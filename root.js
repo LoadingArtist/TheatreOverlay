@@ -266,7 +266,8 @@ function handleKey(event) {
             command = "";
             break;
         default:
-            if (event.location == 0 && event.key.match(/[a-z0-9\.\-\s]/)) {
+			//if (event.location == 0 && event.key.match(/[a-z0-9\.\-\s]/)) {
+            if (event.key.match(/[a-z0-9\.\-\s]/)) {
                 command = command + event.key;
             }
             break;
