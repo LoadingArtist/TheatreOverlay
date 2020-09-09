@@ -935,7 +935,7 @@ function subAlert(msgUsername, msgMonths, msgPlan, msgMessage, msgGifter){
 			_root.MAINCONTAINER.getChildByName("charAnim").badgeMC.gotoAndStop("badge1");
 
 			
-		}else if (msgMonths >= 3 && msgMonths < 5){
+		}else if (msgMonths >= 3 && msgMonths < 6){
 			_root.MAINCONTAINER.getChildByName("charAnim").badgeMC.gotoAndStop("badge3");
 
 			
