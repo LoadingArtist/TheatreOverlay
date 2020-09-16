@@ -1,6 +1,8 @@
 this.stop();
 const _root = this;
 
+this.framerate = 20;
+
 //createjs.Sound.volume = 0.25; //to lower the volume across the whole overlay (might do this in OBS instead)
 
 /// Variables
