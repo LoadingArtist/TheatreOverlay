@@ -1,7 +1,7 @@
 this.stop();
 const _root = this;
 
-this.framerate = 20;
+//this.framerate = 20;
 
 //createjs.Sound.volume = 0.25; //to lower the volume across the whole overlay (might do this in OBS instead)
 
@@ -452,6 +452,7 @@ function executeCallbackDistribution(distributionData, callback, finishedCallBac
 var raidField = new createjs.Container();
 raidField.regX = 0;
 _root.addChild(raidField);
+raiderSingle = "";
 
 function randomRaider(){
 	let raiderSingle = new lib.X_RAIDER();
@@ -464,14 +465,16 @@ function randomRaider(){
 
 	// get random numbers for character customization
 	let randomUsername = Math.random().toString(36).substring(7);
-	let bodyNum = frameFromUsername(randomUsername, raiderSingle.followerPerson.body.totalFrames);
-	let hatNum = frameFromUsername(randomUsername, raiderSingle.followerPerson.hat.totalFrames);
+	raiderSingle.name = randomUsername;
+	
+	let bodyNum = frameFromUsername(randomUsername, raiderSingle.raiderPerson.body.totalFrames);
+	let hatNum = frameFromUsername(randomUsername, raiderSingle.raiderPerson.hat.totalFrames);
 
 
 	// add username/changing clothes	
 	setTimeout(() => {
-		raidField.getChildByName(folMC.name).followerPerson.body.gotoAndStop(bodyNum);
-		raidField.getChildByName(folMC.name).followerPerson.hat.gotoAndStop(hatNum);
+		raidField.getChildByName(raiderSingle.name).raiderPerson.body.gotoAndStop(bodyNum);
+		raidField.getChildByName(raiderSingle.name).raiderPerson.hat.gotoAndStop(hatNum);
 		}, 100)	
 		
 	return raiderSingle;
@@ -1119,6 +1122,7 @@ function donoAlert(msgUsername, msgAmount, msgMessage, msgType, msgCurrency){
 	}
 	
 	//Checks if it's at least 100 bits to fire notifications
+	//if ((trueAmount < 100)||(msgType == "donation" && trueAmount < 200)){
 	if (trueAmount < 100){
 		console.log("Amount too low: " + trueAmount);
 		
@@ -1310,13 +1314,13 @@ function raidAlert(msgUsername, msgRaiders){
 	
 	waitTime = 1000;
 	
-	// RAIDERS CODE
-	//delayBetweenCallbacksPerSegment = [0.1, 0.3, 1]; // seconds
-	//distributionPerSegment = [0.20, 0.5, 1];  // the percentage of count to callback per segment, the last segment is assumed to be what is left over
-	//callbackCount = msgRaiders;
-	//dd = new DistributionData(callbackCount, delayBetweenCallbacksPerSegment, distributionPerSegment);
+	//RAIDERS CODE
+	delayBetweenCallbacksPerSegment = [0.1, 0.3, 1]; // seconds
+	distributionPerSegment = [0.20, 0.5, 1];  // the percentage of count to callback per segment, the last segment is assumed to be what is left over
+	callbackCount = msgRaiders;
+	dd = new DistributionData(callbackCount, delayBetweenCallbacksPerSegment, distributionPerSegment);
 
-	//executeCallbackDistribution(dd, spawnRaider, done);
+	executeCallbackDistribution(dd, spawnRaider, done);
 	
 	//---------------------
 	
