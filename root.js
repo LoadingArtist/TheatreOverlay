@@ -1320,7 +1320,7 @@ function raidAlert(msgUsername, msgRaiders){
 
 	// SpecialCase: Tweak the distribution so there is a single straggler
 	let numberOfStragglers = 1;
-	dd.delayBetweenCallbacksPerSegment.append(1.0); // make the staggers spawn 1 second apart
+	dd.gapBetweenSpawnPerSegment.append(1.0); // make the staggers spawn 1 second apart
 	dd.distributionPerSegment[0] = dd.distributionPerSegment[0]-numberOfStragglers; // steal one of the raiders from the first segment and add it to the stragglers
 	dd.distribution.append(numberOfStragglers);
 	//>
