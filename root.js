@@ -658,8 +658,7 @@ StreamLabSupportedEventTypes = {
 	"twitch_account" : [DonationEvent, SubscriptionEvent, FollowEvent, HostEvent, BitsEvent, RaidEvent],
 	"streamlabs" : [DonationEvent, StreamlabsCustomEvent],
 	"patreon" : [PledgeEvent],
-	"youtube_account" : {},
-	"mixer_account" : {}
+	"youtube_account" : {}
 }
 
 // FETCH EVENTS
