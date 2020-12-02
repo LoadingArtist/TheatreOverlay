@@ -956,6 +956,10 @@ function subAlert(msgUsername, msgMonths, msgPlan, msgMessage, msgGifter){
 			_root.MAINCONTAINER.getChildByName("charAnim").badgeMC.gotoAndStop("badge36");
 			_root.MAINCONTAINER.getChildByName("charAnim").badgeOnTopMC.gotoAndStop("badge36");
 			
+		}else if (msgMonths >= 48 && msgMonths < 60){
+			_root.MAINCONTAINER.getChildByName("charAnim").badgeMC.gotoAndStop("badge48");
+			_root.MAINCONTAINER.getChildByName("charAnim").badgeOnTopMC.gotoAndStop("badge48");
+			
 		}else{
 			console.log("ELSE??? msgMonths: " + msgMonths);
 		}
